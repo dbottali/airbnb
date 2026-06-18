@@ -32,18 +32,6 @@ Base lorda = Accommodation + Cleaning fee
 
 Tutto è modificabile dalla pagina.
 
-## Come caricare su GitHub Pages
-
-1. Crea una repository GitHub, per esempio `airbnb-fondocassa`.
-2. Carica `index.html` nella root della repository.
-3. Vai su `Settings` → `Pages`.
-4. In `Build and deployment`, scegli:
-   - Source: `Deploy from a branch`
-   - Branch: `main`
-   - Folder: `/root`
-5. Salva.
-6. Dopo qualche minuto GitHub ti darà il link pubblico.
-
 ## Nota importante
 
 Questa versione è statica: i dati vengono salvati nel browser con `localStorage`.
