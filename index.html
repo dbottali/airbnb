@@ -1,0 +1,1291 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Airbnb Fondocassa Calculator</title>
+  <meta name="description" content="Calcolatore Airbnb per split payout, ritenuta Italia, property manager e fondocassa." />
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a22;
+      --panel-2: #202636;
+      --panel-3: #11151e;
+      --text: #f5f5f7;
+      --muted: #a1a1aa;
+      --border: #303746;
+      --accent: #e11d48;
+      --accent-2: #fb7185;
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --input: #0b0e14;
+      --shadow: 0 18px 60px rgba(0,0,0,.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(225,29,72,.18), transparent 32rem),
+        radial-gradient(circle at top right, rgba(59,130,246,.13), transparent 30rem),
+        linear-gradient(180deg, #0f1115 0%, #090b10 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 34px 22px 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(30px, 4vw, 52px);
+      letter-spacing: -.055em;
+      line-height: .96;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: -.025em;
+    }
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .055em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 900px;
+      line-height: 1.55;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 22px 42px;
+    }
+
+    .topbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 18px 0;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      background: rgba(23, 26, 34, .82);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: rgba(23, 26, 34, .94);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 18px 18px 0;
+    }
+
+    .card-body { padding: 18px; }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 12.5px;
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--input);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(251,113,133,.9);
+      box-shadow: 0 0 0 3px rgba(225,29,72,.16);
+    }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-grid .full { grid-column: 1 / -1; }
+
+    @media (max-width: 540px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .full { grid-column: auto; }
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 8px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    button, .file-button {
+      border: 0;
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 10px 13px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 13.5px;
+      transition: transform .05s ease, filter .15s ease, background .15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button:hover, .file-button:hover { filter: brightness(1.08); }
+    button:active, .file-button:active { transform: translateY(1px); }
+    button.primary { background: var(--accent); }
+    button.good { background: #15803d; }
+    button.warn { background: #b45309; }
+    button.danger { background: #991b1b; }
+    button.ghost, .file-button.ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    input[type="file"] { display: none; }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 1180px) {
+      .dashboard { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 720px) {
+      .dashboard { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard { grid-template-columns: 1fr; }
+    }
+
+    .metric {
+      background: rgba(32, 38, 54, .9);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 94px;
+    }
+
+    .metric .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .metric .value {
+      font-size: clamp(22px, 2vw, 30px);
+      font-weight: 950;
+      letter-spacing: -.045em;
+      white-space: nowrap;
+    }
+
+    .value.good { color: var(--good); }
+    .value.warn { color: var(--warn); }
+    .value.danger { color: var(--danger); }
+
+    .section-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-top: 1px solid var(--border);
+      margin-top: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(48,55,70,.72);
+      text-align: left;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      background: rgba(17,21,30,.65);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    td.code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: #e5e7eb; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #111827;
+      background: #e5e7eb;
+      white-space: nowrap;
+    }
+
+    .tag.completed, .tag.paid, .tag.confirmed { background: #86efac; }
+    .tag.pending { background: #fde68a; }
+    .tag.cancelled, .tag.refunded { background: #fecaca; }
+
+    .mini-actions {
+      display: flex;
+      gap: 7px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .mini-actions button {
+      padding: 7px 9px;
+      border-radius: 9px;
+      font-size: 12px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .split { grid-template-columns: 1fr; }
+    }
+
+    .preview {
+      background: var(--panel-3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+
+    .preview-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(48,55,70,.8);
+      font-size: 13px;
+    }
+
+    .preview-row:last-child { border-bottom: 0; }
+    .preview-row strong { font-size: 15px; }
+    .muted { color: var(--muted); }
+    .right { text-align: right; }
+    .nowrap { white-space: nowrap; }
+
+    .notice {
+      border: 1px solid rgba(245,158,11,.35);
+      background: rgba(245,158,11,.1);
+      color: #fde68a;
+      border-radius: 16px;
+      padding: 12px 14px;
+      line-height: 1.45;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 20px;
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 18px;
+      text-align: center;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      margin-top: 14px;
+    }
+
+    details {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(17,21,30,.55);
+      margin-top: 14px;
+      overflow: hidden;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 13px 14px;
+      color: var(--text);
+      font-weight: 850;
+    }
+
+    details .inside { padding: 0 14px 14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Airbnb Fondocassa Calculator</h1>
+    <p class="subtitle">
+      Dashboard statica per prenotazioni Airbnb: split payout 80/20, ritenuta italiana, property manager,
+      quota fondocassa dalle pulizie e storico spese. I dati restano nel browser con localStorage.
+    </p>
+    <div class="topbar">
+      <span class="pill">Cleaning fee default: <strong id="pillCleaning">€71.00</strong></span>
+      <span class="pill">Split PM: <strong id="pillPm">20%</strong></span>
+      <span class="pill">Ritenuta Italia: <strong id="pillTax">21%</strong></span>
+      <span class="pill">Fondocassa iniziale: <strong id="pillInitialFund">€161.00</strong></span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="dashboard">
+      <div class="metric">
+        <div class="label">Fondocassa attuale</div>
+        <div class="value good" id="metricFund">€0.00</div>
+      </div>
+      <div class="metric">
+        <div class="label">Entrate fondocassa</div>
+        <div class="value" id="metricFundIn">€0.00</div>
+      </div>
+      <div class="metric">
+        <div class="label">Spese fondocassa</div>
+        <div class="value warn" id="metricFundOut">€0.00</div>
+      </div>
+      <div class="metric">
+        <div class="label">Payout Damiano netto</div>
+        <div class="value" id="metricOwner">€0.00</div>
+      </div>
+      <div class="metric">
+        <div class="label">Payout PM netto</div>
+        <div class="value" id="metricPm">€0.00</div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <aside class="section-stack">
+        <section class="card">
+          <div class="card-header">
+            <h2>Impostazioni</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div>
+                <label for="settingCleaning">Cleaning fee default (€)</label>
+                <input id="settingCleaning" type="number" step="0.01" min="0" />
+              </div>
+              <div>
+                <label for="settingPm">Property manager (%)</label>
+                <input id="settingPm" type="number" step="0.01" min="0" max="100" />
+              </div>
+              <div>
+                <label for="settingTax">Ritenuta Italia (%)</label>
+                <input id="settingTax" type="number" step="0.01" min="0" max="100" />
+              </div>
+              <div>
+                <label for="settingInitialFund">Fondocassa iniziale (€)</label>
+                <input id="settingInitialFund" type="number" step="0.01" />
+              </div>
+            </div>
+            <p class="hint">
+              Regola fondocassa: quota netta reale delle pulizie dentro il payout netto del PM.
+              Formula: <strong>Payout PM netto × Cleaning fee / Base lorda</strong>.
+            </p>
+            <div class="button-row">
+              <button class="primary" id="saveSettingsBtn">Salva impostazioni</button>
+              <button class="ghost" id="resetSettingsBtn">Reset default</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <h2 id="bookingFormTitle">Nuova prenotazione</h2>
+          </div>
+          <div class="card-body">
+            <form id="bookingForm">
+              <input id="bookingId" type="hidden" />
+              <div class="form-grid">
+                <div>
+                  <label for="code">Codice prenotazione</label>
+                  <input id="code" type="text" placeholder="Es. HMFPA5CDR3" required />
+                </div>
+                <div>
+                  <label for="guest">Ospite</label>
+                  <input id="guest" type="text" placeholder="Nome ospite" />
+                </div>
+                <div>
+                  <label for="checkin">Check-in</label>
+                  <input id="checkin" type="date" />
+                </div>
+                <div>
+                  <label for="checkout">Check-out</label>
+                  <input id="checkout" type="date" />
+                </div>
+                <div>
+                  <label for="status">Stato</label>
+                  <select id="status">
+                    <option value="confirmed">Confermata</option>
+                    <option value="paid">Pagata</option>
+                    <option value="completed">Completata</option>
+                    <option value="pending">Pending</option>
+                    <option value="cancelled">Cancellata</option>
+                    <option value="refunded">Rimborsata</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="accommodation">Accommodation / room fee (€)</label>
+                  <input id="accommodation" type="number" step="0.01" min="0" placeholder="594.00" required />
+                </div>
+                <div>
+                  <label for="cleaning">Cleaning fee (€)</label>
+                  <input id="cleaning" type="number" step="0.01" min="0" required />
+                </div>
+                <div>
+                  <label for="airbnbFee">Host service fee Airbnb (€)</label>
+                  <input id="airbnbFee" type="number" step="0.01" min="0" placeholder="122.67" required />
+                </div>
+                <div>
+                  <label for="occupancy">Occupancy taxes Airbnb (€)</label>
+                  <input id="occupancy" type="number" step="0.01" min="0" placeholder="72.00" />
+                </div>
+                <div>
+                  <label for="actualOwner">Payout reale Damiano (€)</label>
+                  <input id="actualOwner" type="number" step="0.01" placeholder="opzionale per audit" />
+                </div>
+                <div>
+                  <label for="actualPm">Payout reale PM (€)</label>
+                  <input id="actualPm" type="number" step="0.01" placeholder="opzionale per audit" />
+                </div>
+                <div class="full">
+                  <label for="notes">Note</label>
+                  <textarea id="notes" placeholder="Note, problemi, pagamenti, messaggi PM..."></textarea>
+                </div>
+              </div>
+
+              <div class="preview" id="bookingPreview"></div>
+
+              <div class="button-row">
+                <button class="primary" type="submit">Salva prenotazione</button>
+                <button class="ghost" type="button" id="clearBookingBtn">Pulisci form</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <h2>Nuova spesa fondocassa</h2>
+          </div>
+          <div class="card-body">
+            <form id="expenseForm">
+              <div class="form-grid">
+                <div>
+                  <label for="expenseDate">Data</label>
+                  <input id="expenseDate" type="date" required />
+                </div>
+                <div>
+                  <label for="expenseAmount">Importo (€)</label>
+                  <input id="expenseAmount" type="number" step="0.01" min="0.01" required />
+                </div>
+                <div class="full">
+                  <label for="expenseCategory">Categoria</label>
+                  <select id="expenseCategory">
+                    <option>Lavanderia</option>
+                    <option>Detersivi</option>
+                    <option>Consumabili</option>
+                    <option>Piccola manutenzione</option>
+                    <option>Chiavi</option>
+                    <option>Emergenza ospite</option>
+                    <option>Altro</option>
+                  </select>
+                </div>
+                <div class="full">
+                  <label for="expenseNote">Nota / storico</label>
+                  <textarea id="expenseNote" placeholder="Es. Lavanderia lenzuola, comunicato da PM su WhatsApp"></textarea>
+                </div>
+              </div>
+              <div class="button-row">
+                <button class="primary" type="submit">Sottrai dal fondocassa</button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </aside>
+
+      <section class="section-stack">
+        <section class="card">
+          <div class="card-header">
+            <h2>Prenotazioni</h2>
+            <div class="button-row" style="margin-top:0">
+              <button class="ghost" id="exportCsvBtn">Export CSV</button>
+              <button class="ghost" id="exportJsonBtn">Export JSON</button>
+              <label class="file-button ghost" for="importJsonInput">Import JSON</label>
+              <input id="importJsonInput" type="file" accept="application/json,.json" />
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="notice">
+              Questa è una pagina statica per GitHub Pages: i dati sono salvati solo nel browser usato.
+              Per condividere i dati con collaboratori, esporta/importa JSON oppure in futuro collega un backend tipo Google Sheets, Supabase o Firebase.
+            </div>
+            <div id="bookingsEmpty" class="empty">Nessuna prenotazione inserita.</div>
+            <div class="table-wrap" id="bookingsTableWrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Codice</th>
+                    <th>Periodo</th>
+                    <th>Stato</th>
+                    <th class="num">Base lorda</th>
+                    <th class="num">Airbnb fee</th>
+                    <th class="num">Ritenuta</th>
+                    <th class="num">Netto totale</th>
+                    <th class="num">Damiano</th>
+                    <th class="num">PM</th>
+                    <th class="num">Fondocassa</th>
+                    <th class="num">PM effettivo</th>
+                    <th class="right">Azioni</th>
+                  </tr>
+                </thead>
+                <tbody id="bookingsTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <div class="split">
+          <section class="card">
+            <div class="card-header">
+              <h2>Storico fondocassa</h2>
+            </div>
+            <div class="card-body">
+              <div id="movementsEmpty" class="empty">Nessun movimento fondocassa.</div>
+              <div class="table-wrap" id="movementsTableWrap">
+                <table style="min-width:720px">
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Tipo</th>
+                      <th>Descrizione</th>
+                      <th class="num">Entrata</th>
+                      <th class="num">Uscita</th>
+                      <th class="num">Saldo dopo</th>
+                      <th class="right">Azioni</th>
+                    </tr>
+                  </thead>
+                  <tbody id="movementsTbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h2>Spese inserite</h2>
+            </div>
+            <div class="card-body">
+              <div id="expensesEmpty" class="empty">Nessuna spesa inserita.</div>
+              <div class="table-wrap" id="expensesTableWrap">
+                <table style="min-width:680px">
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Categoria</th>
+                      <th>Nota</th>
+                      <th class="num">Importo</th>
+                      <th class="right">Azioni</th>
+                    </tr>
+                  </thead>
+                  <tbody id="expensesTbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <section class="card">
+          <div class="card-header">
+            <h2>Audit e calcoli</h2>
+          </div>
+          <div class="card-body">
+            <details>
+              <summary>Formula usata</summary>
+              <div class="inside">
+                <p class="hint">
+                  Base lorda = accommodation + cleaning fee.<br>
+                  Payout prima ritenuta = base lorda - host service fee Airbnb.<br>
+                  Ritenuta Italia = base lorda × aliquota ritenuta.<br>
+                  Netto totale = payout prima ritenuta - ritenuta Italia.<br>
+                  Payout PM = netto totale × percentuale PM.<br>
+                  Payout Damiano = netto totale - payout PM.<br>
+                  Fondocassa = payout PM netto × cleaning fee / base lorda.<br>
+                  PM effettivo = payout PM netto - fondocassa.
+                </p>
+              </div>
+            </details>
+
+            <details>
+              <summary>Danger zone</summary>
+              <div class="inside">
+                <div class="button-row">
+                  <button class="danger" id="deleteAllBtn">Cancella tutti i dati locali</button>
+                </div>
+                <p class="hint">Cancella prenotazioni, spese e impostazioni salvate in questo browser.</p>
+              </div>
+            </details>
+
+            <p class="footer">
+              Nota: questo strumento è gestionale e non sostituisce commercialista/CAF. Le tasse sono calcolate secondo le regole configurate nella pagina.
+            </p>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "airbnbFondocassaCalculator.v1";
+
+    const defaults = {
+      settings: {
+        cleaningFee: 71,
+        pmPercent: 20,
+        taxPercent: 21,
+        initialFund: 161
+      },
+      bookings: [],
+      expenses: []
+    };
+
+    let state = loadState();
+
+    const $ = (id) => document.getElementById(id);
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaults);
+        const parsed = JSON.parse(raw);
+        return {
+          settings: { ...defaults.settings, ...(parsed.settings || {}) },
+          bookings: Array.isArray(parsed.bookings) ? parsed.bookings : [],
+          expenses: Array.isArray(parsed.expenses) ? parsed.expenses : []
+        };
+      } catch {
+        return structuredClone(defaults);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state, null, 2));
+    }
+
+    function eur(value) {
+      const n = Number.isFinite(Number(value)) ? Number(value) : 0;
+      return n.toLocaleString("it-IT", { style: "currency", currency: "EUR" });
+    }
+
+    function pct(value) {
+      const n = Number.isFinite(Number(value)) ? Number(value) : 0;
+      return n.toLocaleString("it-IT", { maximumFractionDigits: 2 }) + "%";
+    }
+
+    function round2(value) {
+      return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+    }
+
+    function num(id) {
+      const v = $(id).value;
+      if (v === "" || v === null || typeof v === "undefined") return 0;
+      return Number(String(v).replace(",", ".")) || 0;
+    }
+
+    function text(id) {
+      return $(id).value.trim();
+    }
+
+    function isActiveBooking(status) {
+      return ["confirmed", "paid", "completed"].includes(status);
+    }
+
+    function calculateBooking(booking) {
+      const s = state.settings;
+      const accommodation = Number(booking.accommodation) || 0;
+      const cleaning = Number(booking.cleaning) || 0;
+      const airbnbFee = Number(booking.airbnbFee) || 0;
+      const baseGross = round2(accommodation + cleaning);
+      const preTaxPayout = round2(baseGross - airbnbFee);
+      const withholding = round2(baseGross * (s.taxPercent / 100));
+      const netTotal = round2(preTaxPayout - withholding);
+      const pmNetEstimated = round2(netTotal * (s.pmPercent / 100));
+      const ownerNetEstimated = round2(netTotal - pmNetEstimated);
+
+      const actualOwnerProvided = booking.actualOwner !== "" && booking.actualOwner !== null && typeof booking.actualOwner !== "undefined";
+      const actualPmProvided = booking.actualPm !== "" && booking.actualPm !== null && typeof booking.actualPm !== "undefined";
+
+      const ownerNet = actualOwnerProvided ? Number(booking.actualOwner) : ownerNetEstimated;
+      const pmNet = actualPmProvided ? Number(booking.actualPm) : pmNetEstimated;
+      const netUsed = round2(ownerNet + pmNet);
+
+      const cleaningRatio = baseGross > 0 ? cleaning / baseGross : 0;
+      const fundContributionRaw = pmNet * cleaningRatio;
+      const fundContribution = isActiveBooking(booking.status) ? round2(fundContributionRaw) : 0;
+      const pmEffective = round2(pmNet - fundContribution);
+
+      const ownerGrossPreTax = round2(preTaxPayout * ((100 - s.pmPercent) / 100));
+      const pmGrossPreTax = round2(preTaxPayout * (s.pmPercent / 100));
+      const ownerWithholding = round2(withholding * ((100 - s.pmPercent) / 100));
+      const pmWithholding = round2(withholding * (s.pmPercent / 100));
+
+      return {
+        baseGross,
+        preTaxPayout,
+        withholding,
+        netTotal,
+        ownerNetEstimated,
+        pmNetEstimated,
+        ownerNet: round2(ownerNet),
+        pmNet: round2(pmNet),
+        netUsed,
+        cleaningRatio,
+        fundContribution,
+        pmEffective,
+        ownerGrossPreTax,
+        pmGrossPreTax,
+        ownerWithholding,
+        pmWithholding
+      };
+    }
+
+    function currentBookingFromForm() {
+      return {
+        id: $("bookingId").value || crypto.randomUUID(),
+        code: text("code"),
+        guest: text("guest"),
+        checkin: $("checkin").value,
+        checkout: $("checkout").value,
+        status: $("status").value,
+        accommodation: num("accommodation"),
+        cleaning: num("cleaning"),
+        airbnbFee: num("airbnbFee"),
+        occupancy: num("occupancy"),
+        actualOwner: $("actualOwner").value === "" ? "" : num("actualOwner"),
+        actualPm: $("actualPm").value === "" ? "" : num("actualPm"),
+        notes: text("notes"),
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function updatePreview() {
+      const booking = currentBookingFromForm();
+      const c = calculateBooking(booking);
+      $("bookingPreview").innerHTML = `
+        <h3>Anteprima calcolo</h3>
+        <div class="preview-row"><span>Base lorda</span><strong>${eur(c.baseGross)}</strong></div>
+        <div class="preview-row"><span>Host service fee Airbnb</span><strong>-${eur(booking.airbnbFee)}</strong></div>
+        <div class="preview-row"><span>Ritenuta Italia</span><strong>-${eur(c.withholding)}</strong></div>
+        <div class="preview-row"><span>Netto totale Airbnb</span><strong>${eur(c.netTotal)}</strong></div>
+        <div class="preview-row"><span>Payout Damiano</span><strong>${eur(c.ownerNet)}</strong></div>
+        <div class="preview-row"><span>Payout PM</span><strong>${eur(c.pmNet)}</strong></div>
+        <div class="preview-row"><span>Fondocassa generato</span><strong>${eur(c.fundContribution)}</strong></div>
+        <div class="preview-row"><span>PM effettivo dopo fondocassa</span><strong>${eur(c.pmEffective)}</strong></div>
+      `;
+    }
+
+    function renderSettings() {
+      $("settingCleaning").value = state.settings.cleaningFee;
+      $("settingPm").value = state.settings.pmPercent;
+      $("settingTax").value = state.settings.taxPercent;
+      $("settingInitialFund").value = state.settings.initialFund;
+      $("cleaning").value = $("cleaning").value || state.settings.cleaningFee;
+
+      $("pillCleaning").textContent = eur(state.settings.cleaningFee);
+      $("pillPm").textContent = pct(state.settings.pmPercent);
+      $("pillTax").textContent = pct(state.settings.taxPercent);
+      $("pillInitialFund").textContent = eur(state.settings.initialFund);
+    }
+
+    function dateRange(booking) {
+      if (!booking.checkin && !booking.checkout) return "—";
+      if (booking.checkin && booking.checkout) return `${booking.checkin} → ${booking.checkout}`;
+      return booking.checkin || booking.checkout;
+    }
+
+    function sortedBookings() {
+      return [...state.bookings].sort((a, b) => {
+        const da = a.checkin || "";
+        const db = b.checkin || "";
+        return db.localeCompare(da);
+      });
+    }
+
+    function sortedExpenses() {
+      return [...state.expenses].sort((a, b) => {
+        const da = a.date || "";
+        const db = b.date || "";
+        return db.localeCompare(da);
+      });
+    }
+
+    function buildMovements() {
+      const movements = [];
+
+      state.bookings.forEach(b => {
+        const c = calculateBooking(b);
+        if (c.fundContribution > 0) {
+          movements.push({
+            id: "booking:" + b.id,
+            date: b.checkout || b.checkin || "",
+            type: "Entrata",
+            description: `Quota fondocassa pulizie — ${b.code || "senza codice"}`,
+            in: c.fundContribution,
+            out: 0,
+            locked: true
+          });
+        }
+      });
+
+      state.expenses.forEach(e => {
+        movements.push({
+          id: "expense:" + e.id,
+          expenseId: e.id,
+          date: e.date || "",
+          type: "Uscita",
+          description: `${e.category || "Spesa"} — ${e.note || "nessuna nota"}`,
+          in: 0,
+          out: Number(e.amount) || 0,
+          locked: false
+        });
+      });
+
+      movements.sort((a, b) => {
+        const da = a.date || "9999-99-99";
+        const db = b.date || "9999-99-99";
+        return da.localeCompare(db);
+      });
+
+      let balance = Number(state.settings.initialFund) || 0;
+      return movements.map(m => {
+        balance = round2(balance + (Number(m.in) || 0) - (Number(m.out) || 0));
+        return { ...m, balance };
+      });
+    }
+
+    function totals() {
+      const bookingTotals = state.bookings.reduce((acc, b) => {
+        const c = calculateBooking(b);
+        if (isActiveBooking(b.status)) {
+          acc.fundIn += c.fundContribution;
+          acc.owner += c.ownerNet;
+          acc.pm += c.pmNet;
+          acc.netTotal += c.netUsed;
+          acc.withholding += c.withholding;
+        }
+        return acc;
+      }, { fundIn: 0, owner: 0, pm: 0, netTotal: 0, withholding: 0 });
+
+      const expenseTotal = state.expenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+      const fundCurrent = round2((Number(state.settings.initialFund) || 0) + bookingTotals.fundIn - expenseTotal);
+
+      return {
+        ...bookingTotals,
+        fundIn: round2(bookingTotals.fundIn),
+        fundOut: round2(expenseTotal),
+        fundCurrent
+      };
+    }
+
+    function renderDashboard() {
+      const t = totals();
+      $("metricFund").textContent = eur(t.fundCurrent);
+      $("metricFund").className = "value " + (t.fundCurrent < 0 ? "danger" : "good");
+      $("metricFundIn").textContent = eur(t.fundIn);
+      $("metricFundOut").textContent = eur(t.fundOut);
+      $("metricOwner").textContent = eur(t.owner);
+      $("metricPm").textContent = eur(t.pm);
+    }
+
+    function renderBookings() {
+      const rows = sortedBookings();
+      $("bookingsEmpty").style.display = rows.length ? "none" : "block";
+      $("bookingsTableWrap").style.display = rows.length ? "block" : "none";
+
+      $("bookingsTbody").innerHTML = rows.map(b => {
+        const c = calculateBooking(b);
+        return `
+          <tr>
+            <td class="code">${escapeHtml(b.code || "—")}<br><span class="muted">${escapeHtml(b.guest || "")}</span></td>
+            <td>${escapeHtml(dateRange(b))}</td>
+            <td><span class="tag ${escapeHtml(b.status)}">${escapeHtml(statusLabel(b.status))}</span></td>
+            <td class="num">${eur(c.baseGross)}</td>
+            <td class="num">-${eur(b.airbnbFee)}</td>
+            <td class="num">-${eur(c.withholding)}</td>
+            <td class="num">${eur(c.netTotal)}</td>
+            <td class="num">${eur(c.ownerNet)}</td>
+            <td class="num">${eur(c.pmNet)}</td>
+            <td class="num">${eur(c.fundContribution)}</td>
+            <td class="num">${eur(c.pmEffective)}</td>
+            <td class="right">
+              <div class="mini-actions">
+                <button class="ghost" onclick="editBooking('${b.id}')">Modifica</button>
+                <button class="danger" onclick="deleteBooking('${b.id}')">Elimina</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function statusLabel(status) {
+      const map = {
+        confirmed: "Confermata",
+        paid: "Pagata",
+        completed: "Completata",
+        pending: "Pending",
+        cancelled: "Cancellata",
+        refunded: "Rimborsata"
+      };
+      return map[status] || status || "—";
+    }
+
+    function renderExpenses() {
+      const rows = sortedExpenses();
+      $("expensesEmpty").style.display = rows.length ? "none" : "block";
+      $("expensesTableWrap").style.display = rows.length ? "block" : "none";
+
+      $("expensesTbody").innerHTML = rows.map(e => `
+        <tr>
+          <td>${escapeHtml(e.date || "—")}</td>
+          <td>${escapeHtml(e.category || "—")}</td>
+          <td>${escapeHtml(e.note || "—")}</td>
+          <td class="num">${eur(e.amount)}</td>
+          <td class="right">
+            <div class="mini-actions">
+              <button class="danger" onclick="deleteExpense('${e.id}')">Elimina</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function renderMovements() {
+      const movements = buildMovements();
+      $("movementsEmpty").style.display = movements.length ? "none" : "block";
+      $("movementsTableWrap").style.display = movements.length ? "block" : "none";
+
+      $("movementsTbody").innerHTML = movements.map(m => `
+        <tr>
+          <td>${escapeHtml(m.date || "—")}</td>
+          <td>${escapeHtml(m.type)}</td>
+          <td>${escapeHtml(m.description)}</td>
+          <td class="num">${m.in ? eur(m.in) : "—"}</td>
+          <td class="num">${m.out ? eur(m.out) : "—"}</td>
+          <td class="num"><strong>${eur(m.balance)}</strong></td>
+          <td class="right">
+            ${m.locked ? '<span class="muted">auto</span>' : `<button class="danger" onclick="deleteExpense('${m.expenseId}')">Elimina</button>`}
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderAll() {
+      renderSettings();
+      renderDashboard();
+      renderBookings();
+      renderExpenses();
+      renderMovements();
+      updatePreview();
+    }
+
+    function clearBookingForm() {
+      $("bookingForm").reset();
+      $("bookingId").value = "";
+      $("bookingFormTitle").textContent = "Nuova prenotazione";
+      $("cleaning").value = state.settings.cleaningFee;
+      $("status").value = "confirmed";
+      updatePreview();
+    }
+
+    window.editBooking = function(id) {
+      const b = state.bookings.find(x => x.id === id);
+      if (!b) return;
+
+      $("bookingId").value = b.id;
+      $("code").value = b.code || "";
+      $("guest").value = b.guest || "";
+      $("checkin").value = b.checkin || "";
+      $("checkout").value = b.checkout || "";
+      $("status").value = b.status || "confirmed";
+      $("accommodation").value = b.accommodation ?? "";
+      $("cleaning").value = b.cleaning ?? state.settings.cleaningFee;
+      $("airbnbFee").value = b.airbnbFee ?? "";
+      $("occupancy").value = b.occupancy ?? "";
+      $("actualOwner").value = b.actualOwner ?? "";
+      $("actualPm").value = b.actualPm ?? "";
+      $("notes").value = b.notes || "";
+      $("bookingFormTitle").textContent = "Modifica prenotazione";
+      updatePreview();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.deleteBooking = function(id) {
+      const b = state.bookings.find(x => x.id === id);
+      if (!b) return;
+      if (!confirm(`Eliminare la prenotazione ${b.code || ""}?`)) return;
+      state.bookings = state.bookings.filter(x => x.id !== id);
+      saveState();
+      renderAll();
+    }
+
+    window.deleteExpense = function(id) {
+      const e = state.expenses.find(x => x.id === id);
+      if (!e) return;
+      if (!confirm(`Eliminare la spesa ${eur(e.amount)}?`)) return;
+      state.expenses = state.expenses.filter(x => x.id !== id);
+      saveState();
+      renderAll();
+    }
+
+    function exportCsv() {
+      const headers = [
+        "code", "guest", "checkin", "checkout", "status",
+        "accommodation", "cleaning", "airbnb_fee", "occupancy_taxes",
+        "base_gross", "pre_tax_payout", "withholding", "net_total",
+        "owner_net", "pm_net", "fund_contribution", "pm_effective", "notes"
+      ];
+
+      const lines = [headers.join(",")];
+
+      state.bookings.forEach(b => {
+        const c = calculateBooking(b);
+        const row = [
+          b.code, b.guest, b.checkin, b.checkout, b.status,
+          b.accommodation, b.cleaning, b.airbnbFee, b.occupancy,
+          c.baseGross, c.preTaxPayout, c.withholding, c.netTotal,
+          c.ownerNet, c.pmNet, c.fundContribution, c.pmEffective, b.notes
+        ].map(csvCell);
+        lines.push(row.join(","));
+      });
+
+      downloadText("airbnb-prenotazioni.csv", lines.join("\n"), "text/csv");
+    }
+
+    function csvCell(value) {
+      const s = String(value ?? "");
+      if (/[",\n]/.test(s)) return `"${s.replaceAll('"', '""')}"`;
+      return s;
+    }
+
+    function exportJson() {
+      downloadText("airbnb-fondocassa-backup.json", JSON.stringify(state, null, 2), "application/json");
+    }
+
+    function downloadText(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function importJson(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(reader.result);
+          if (!imported || typeof imported !== "object") throw new Error("Formato non valido");
+          state = {
+            settings: { ...defaults.settings, ...(imported.settings || {}) },
+            bookings: Array.isArray(imported.bookings) ? imported.bookings : [],
+            expenses: Array.isArray(imported.expenses) ? imported.expenses : []
+          };
+          saveState();
+          renderAll();
+          alert("Import completato.");
+        } catch (err) {
+          alert("Import fallito: JSON non valido.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    $("saveSettingsBtn").addEventListener("click", () => {
+      state.settings = {
+        cleaningFee: num("settingCleaning"),
+        pmPercent: num("settingPm"),
+        taxPercent: num("settingTax"),
+        initialFund: num("settingInitialFund")
+      };
+      saveState();
+      renderAll();
+    });
+
+    $("resetSettingsBtn").addEventListener("click", () => {
+      if (!confirm("Ripristinare le impostazioni default?")) return;
+      state.settings = structuredClone(defaults.settings);
+      saveState();
+      renderAll();
+    });
+
+    $("bookingForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const booking = currentBookingFromForm();
+      if (!booking.code) {
+        alert("Inserisci almeno il codice prenotazione.");
+        return;
+      }
+
+      const idx = state.bookings.findIndex(b => b.id === booking.id);
+      if (idx >= 0) {
+        state.bookings[idx] = { ...state.bookings[idx], ...booking };
+      } else {
+        booking.createdAt = new Date().toISOString();
+        state.bookings.push(booking);
+      }
+
+      saveState();
+      clearBookingForm();
+      renderAll();
+    });
+
+    $("clearBookingBtn").addEventListener("click", clearBookingForm);
+
+    $("expenseForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const expense = {
+        id: crypto.randomUUID(),
+        date: $("expenseDate").value,
+        amount: num("expenseAmount"),
+        category: $("expenseCategory").value,
+        note: text("expenseNote"),
+        createdAt: new Date().toISOString()
+      };
+
+      state.expenses.push(expense);
+      saveState();
+
+      $("expenseForm").reset();
+      $("expenseDate").value = new Date().toISOString().slice(0, 10);
+      renderAll();
+    });
+
+    ["code", "guest", "checkin", "checkout", "status", "accommodation", "cleaning", "airbnbFee", "occupancy", "actualOwner", "actualPm", "notes"].forEach(id => {
+      $(id).addEventListener("input", updatePreview);
+      $(id).addEventListener("change", updatePreview);
+    });
+
+    $("exportCsvBtn").addEventListener("click", exportCsv);
+    $("exportJsonBtn").addEventListener("click", exportJson);
+    $("importJsonInput").addEventListener("change", (e) => {
+      if (e.target.files && e.target.files[0]) importJson(e.target.files[0]);
+      e.target.value = "";
+    });
+
+    $("deleteAllBtn").addEventListener("click", () => {
+      if (!confirm("Cancellare tutti i dati locali?")) return;
+      if (!confirm("Ultima conferma: questa azione non si può annullare.")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = structuredClone(defaults);
+      renderAll();
+    });
+
+    $("expenseDate").value = new Date().toISOString().slice(0, 10);
+    renderAll();
+  </script>
+</body>
+</html>
