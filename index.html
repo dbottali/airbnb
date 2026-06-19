@@ -4,185 +4,982 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Airbnb Calculator</title>
+  <meta name="description" content="Airbnb Calculator per payout, property manager e fondocassa." />
   <style>
-    :root{--bg:#0f1115;--card:#171a22;--card2:#202636;--text:#f5f5f7;--muted:#a1a1aa;--border:#303746;--accent:#e11d48;--good:#22c55e;--warn:#f59e0b;--danger:#ef4444;--input:#0b0e14}
-    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top left,rgba(225,29,72,.18),transparent 34rem),linear-gradient(180deg,#0f1115,#090b10);color:var(--text)}
-    header,main{max-width:1240px;margin:0 auto;padding:28px 20px} header{padding-bottom:8px} h1{font-size:clamp(34px,5vw,58px);line-height:.95;margin:0 0 8px;letter-spacing:-.06em} h2{font-size:19px;margin:0}.sub{color:var(--muted);line-height:1.5;max-width:850px;margin:0}.pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.pill{border:1px solid var(--border);background:rgba(23,26,34,.85);border-radius:999px;padding:8px 12px;color:var(--muted);font-size:13px}.pill strong{color:var(--text)}
-    .dash{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:14px 0 18px}.metric{background:var(--card2);border:1px solid var(--border);border-radius:18px;padding:14px}.metric .lab{color:var(--muted);font-size:12px;margin-bottom:8px}.metric .val{font-size:26px;font-weight:900;letter-spacing:-.04em}.good{color:var(--good)}.warn{color:var(--warn)}.dangerText{color:var(--danger)}
-    .grid{display:grid;grid-template-columns:370px 1fr;gap:18px;align-items:start}.stack{display:grid;gap:18px}.card{background:rgba(23,26,34,.94);border:1px solid var(--border);border-radius:20px;box-shadow:0 18px 60px rgba(0,0,0,.28);overflow:hidden}.head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:18px 18px 0}.body{padding:18px}label{display:block;color:var(--muted);font-size:12.5px;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid var(--border);background:var(--input);color:var(--text);border-radius:12px;padding:11px 12px;font-size:14px;outline:none}input:focus,select:focus,textarea:focus{border-color:#fb7185;box-shadow:0 0 0 3px rgba(225,29,72,.16)}textarea{resize:vertical;min-height:80px}.fields{display:grid;gap:12px}.hint{color:var(--muted);font-size:12px;line-height:1.45;margin-top:8px}.buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}button{border:0;background:var(--card2);color:var(--text);padding:10px 13px;border-radius:12px;cursor:pointer;font-weight:800;font-size:13.5px}button:hover{filter:brightness(1.08)}.primary{background:var(--accent)}.ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}.danger{background:#991b1b}.preview{background:#11151e;border:1px solid var(--border);border-radius:16px;padding:14px;margin-top:14px}.row{display:flex;justify-content:space-between;gap:18px;padding:8px 0;border-bottom:1px dashed rgba(48,55,70,.8);font-size:13px}.row:last-child{border-bottom:0}.row strong{font-size:15px}.notice{border:1px solid rgba(245,158,11,.35);background:rgba(245,158,11,.1);color:#fde68a;border-radius:16px;padding:12px 14px;line-height:1.45;font-size:13px;margin-top:12px}.tableWrap{overflow-x:auto;border-top:1px solid var(--border);margin-top:14px}table{width:100%;border-collapse:collapse;min-width:820px}th,td{padding:12px 10px;border-bottom:1px solid rgba(48,55,70,.72);text-align:left;font-size:13px;vertical-align:top}th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;background:rgba(17,21,30,.65)}.num{text-align:right;font-variant-numeric:tabular-nums}.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.mini{display:flex;gap:7px;justify-content:flex-end;flex-wrap:wrap}.mini button{padding:7px 9px;border-radius:9px;font-size:12px}.split{display:grid;grid-template-columns:1fr 1fr;gap:18px}.empty{color:var(--muted);padding:18px;text-align:center;border:1px dashed var(--border);border-radius:16px;margin-top:14px}.muted{color:var(--muted)}details{border:1px solid var(--border);border-radius:16px;background:rgba(17,21,30,.55);margin-top:14px;overflow:hidden}summary{cursor:pointer;padding:13px 14px;font-weight:850}details .inside{padding:0 14px 14px}.footer{color:var(--muted);font-size:12px;line-height:1.5;margin-top:20px}
-    @media(max-width:1050px){.grid{grid-template-columns:1fr}.dash{grid-template-columns:repeat(3,1fr)}}@media(max-width:820px){.split{grid-template-columns:1fr}.dash{grid-template-columns:1fr 1fr}}@media(max-width:480px){.dash{grid-template-columns:1fr}}
+    :root {
+      --bg: #101315;
+      --bg-soft: #151a1d;
+      --card: #1b2125;
+      --card-2: #20282d;
+      --input: #111619;
+      --text: #f6f7f7;
+      --muted: #9aa4aa;
+      --border: #303a40;
+      --accent: #ff5a5f;
+      --accent-soft: rgba(255, 90, 95, .13);
+      --good: #00a699;
+      --good-soft: rgba(0,166,153,.14);
+      --warn: #ffb400;
+      --danger: #ff5a5f;
+      --shadow: 0 14px 40px rgba(0,0,0,.28);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(0,166,153,.18), transparent 34rem),
+        radial-gradient(circle at 85% 8%, rgba(255,180,0,.09), transparent 26rem),
+        linear-gradient(180deg, var(--bg) 0%, #0b0e10 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 28px 18px 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 54px);
+      letter-spacing: -.055em;
+      line-height: .95;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: -.02em;
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      max-width: 860px;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 0 18px 34px;
+    }
+
+    .config-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(27,33,37,.75);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .pill strong { color: var(--text); }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    @media (max-width: 980px) { .dashboard { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 620px) { .dashboard { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 420px) { .dashboard { grid-template-columns: 1fr; } }
+
+    .metric, .card {
+      border: 1px solid var(--border);
+      background: rgba(27,33,37,.92);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .metric {
+      min-height: 84px;
+      padding: 13px;
+    }
+
+    .metric .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .metric .value {
+      font-weight: 950;
+      font-size: clamp(22px, 2vw, 28px);
+      letter-spacing: -.04em;
+      white-space: nowrap;
+    }
+
+    .value.good { color: var(--good); }
+    .value.warn { color: var(--warn); }
+    .value.danger { color: var(--danger); }
+
+    .forms {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 12px;
+      align-items: stretch;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 920px) { .forms { grid-template-columns: 1fr; } }
+
+    .card-header {
+      padding: 14px 14px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-body { padding: 14px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .form-grid .full { grid-column: 1 / -1; }
+
+    @media (max-width: 580px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .full { grid-column: auto; }
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      color: var(--text);
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 10px 11px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 11px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font-weight: 850;
+      color: #fff;
+      background: var(--card-2);
+      font-size: 13px;
+    }
+
+    button:hover { filter: brightness(1.08); }
+    button.primary { background: var(--accent); }
+    button.good { background: var(--good); }
+    button.ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    button.danger { background: #8f2930; }
+
+    .preview {
+      margin-top: 10px;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      padding: 10px 12px;
+    }
+
+    .preview-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(255,255,255,.1);
+      font-size: 13px;
+    }
+
+    .preview-row:last-child { border-bottom: 0; }
+    .preview-row strong { font-size: 14px; }
+
+    .tables {
+      display: grid;
+      gap: 12px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-top: 1px solid var(--border);
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+    }
+
+    th, td {
+      border-bottom: 1px solid rgba(48,58,64,.75);
+      padding: 10px 9px;
+      font-size: 13px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(17,22,25,.75);
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+
+    td.num, th.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    td.code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .muted { color: var(--muted); }
+    .empty {
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      border-radius: 13px;
+      padding: 14px;
+      text-align: center;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .mini-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .mini-actions button {
+      padding: 6px 8px;
+      border-radius: 9px;
+      font-size: 12px;
+    }
+
+    .compact-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .compact-split { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Airbnb Calculator</h1>
-    <p class="sub">Inserisci il payout netto che ricevi via email da Airbnb. Il resto viene calcolato automaticamente: payout totale stimato, quota property manager, fondocassa e storico spese.</p>
-    <div class="pills">
+    <p class="subtitle">
+      Inserisci la prenotazione con il valore <strong>You earn</strong> ricevuto da Airbnb. Il resto viene calcolato automaticamente.
+    </p>
+    <div class="config-row">
       <span class="pill">Cleaning fee <strong>€71.00</strong></span>
-      <span class="pill">Property manager <strong>20%</strong></span>
-      <span class="pill">Ritenuta Italia <strong>21%</strong></span>
+      <span class="pill">PM <strong>20%</strong></span>
+      <span class="pill">Ritenuta <strong>21%</strong></span>
       <span class="pill">Fondocassa iniziale <strong>€161.00</strong></span>
     </div>
   </header>
 
-  <main>
-    <section class="dash">
-      <div class="metric"><div class="lab">Fondocassa attuale</div><div class="val good" id="metricFund">€0.00</div></div>
-      <div class="metric"><div class="lab">Entrate fondocassa</div><div class="val" id="metricFundIn">€0.00</div></div>
-      <div class="metric"><div class="lab">Spese fondocassa</div><div class="val warn" id="metricFundOut">€0.00</div></div>
-      <div class="metric"><div class="lab">Payout Damiano</div><div class="val" id="metricOwner">€0.00</div></div>
-      <div class="metric"><div class="lab">Payout PM stimato</div><div class="val" id="metricPm">€0.00</div></div>
+  <main class="container">
+    <section class="dashboard">
+      <div class="metric">
+        <div class="label">Fondocassa attuale</div>
+        <div class="value good" id="metricFund">€0.00</div>
+      </div>
+      <div class="metric">
+        <div class="label">Entrate fondocassa</div>
+        <div class="value" id="metricFundIn">€0.00</div>
+      </div>
+      <div class="metric">
+        <div class="label">Spese fondocassa</div>
+        <div class="value warn" id="metricFundOut">€0.00</div>
+      </div>
+      <div class="metric">
+        <div class="label">Payout Damiano</div>
+        <div class="value" id="metricOwner">€0.00</div>
+      </div>
+      <div class="metric">
+        <div class="label">Payout PM</div>
+        <div class="value" id="metricPm">€0.00</div>
+      </div>
     </section>
 
-    <div class="grid">
-      <aside class="stack">
-        <section class="card">
-          <div class="head"><h2 id="bookingFormTitle">Nuova prenotazione</h2></div>
-          <div class="body">
-            <form id="bookingForm">
-              <input id="bookingId" type="hidden" />
-              <div class="fields">
-                <div><label for="code">Codice prenotazione</label><input id="code" type="text" placeholder="Es. HMFPA5CDR3" required /></div>
-                <div><label for="guest">Nome ospite</label><input id="guest" type="text" placeholder="Nome ospite" /></div>
-                <div><label for="ownerPayout">Payout netto ricevuto da Damiano (€)</label><input id="ownerPayout" type="number" step="0.01" min="0" placeholder="Es. 165.19" required /></div>
-                <div><label for="notes">Nota opzionale</label><textarea id="notes" placeholder="Eventuali note sulla prenotazione..."></textarea></div>
+    <section class="forms">
+      <div class="card">
+        <div class="card-header">
+          <h2 id="bookingFormTitle">Nuova prenotazione</h2>
+        </div>
+        <div class="card-body">
+          <form id="bookingForm">
+            <input id="bookingId" type="hidden" />
+            <div class="form-grid">
+              <div>
+                <label for="bookingDate">Data prenotazione</label>
+                <input id="bookingDate" type="date" required />
               </div>
-              <div class="preview" id="bookingPreview"></div>
-              <div class="buttons"><button class="primary" type="submit">Salva prenotazione</button><button class="ghost" type="button" id="clearBookingBtn">Pulisci</button></div>
-            </form>
-          </div>
-        </section>
-
-        <section class="card">
-          <div class="head"><h2>Nuova spesa fondocassa</h2></div>
-          <div class="body">
-            <form id="expenseForm">
-              <div class="fields">
-                <div><label for="expenseDate">Data</label><input id="expenseDate" type="date" required /></div>
-                <div><label for="expenseAmount">Importo (€)</label><input id="expenseAmount" type="number" step="0.01" min="0.01" required /></div>
-                <div><label for="expenseCategory">Categoria</label><select id="expenseCategory"><option>Lavanderia</option><option>Detersivi</option><option>Consumabili</option><option>Piccola manutenzione</option><option>Chiavi</option><option>Emergenza ospite</option><option>Altro</option></select></div>
-                <div><label for="expenseNote">Nota / storico</label><textarea id="expenseNote" placeholder="Es. Lavanderia lenzuola, comunicato dal PM"></textarea></div>
+              <div>
+                <label for="code">Codice prenotazione</label>
+                <input id="code" type="text" placeholder="HMCMPR2BY3" required />
               </div>
-              <div class="buttons"><button class="primary" type="submit">Sottrai dal fondocassa</button></div>
-            </form>
-          </div>
-        </section>
-      </aside>
-
-      <section class="stack">
-        <section class="card">
-          <div class="head"><h2>Prenotazioni</h2><div class="buttons" style="margin-top:0"><button class="ghost" id="exportCsvBtn">Export dati CSV</button></div></div>
-          <div class="body">
-            <div class="notice">I dati sono salvati solo nel browser. Il CSV è il formato più leggibile per collaboratori non tecnici: si apre con Excel, Numbers, Google Sheets o LibreOffice.</div>
-            <div id="bookingsEmpty" class="empty">Nessuna prenotazione inserita.</div>
-            <div class="tableWrap" id="bookingsTableWrap"><table><thead><tr><th>Codice</th><th>Ospite</th><th class="num">Payout Damiano</th><th class="num">Payout totale</th><th class="num">Payout PM</th><th class="num">Fondocassa</th><th class="num">PM effettivo</th><th>Note</th><th class="num">Azioni</th></tr></thead><tbody id="bookingsTbody"></tbody></table></div>
-          </div>
-        </section>
-
-        <div class="split">
-          <section class="card">
-            <div class="head"><h2>Storico fondocassa</h2></div>
-            <div class="body">
-              <div id="movementsEmpty" class="empty">Nessun movimento fondocassa.</div>
-              <div class="tableWrap" id="movementsTableWrap"><table style="min-width:680px"><thead><tr><th>Tipo</th><th>Descrizione</th><th class="num">Entrata</th><th class="num">Uscita</th><th class="num">Saldo dopo</th><th class="num">Azioni</th></tr></thead><tbody id="movementsTbody"></tbody></table></div>
+              <div>
+                <label for="guest">Nome ospite</label>
+                <input id="guest" type="text" placeholder="Nome ospite" />
+              </div>
+              <div>
+                <label for="youEarn">You earn Airbnb (€)</label>
+                <input id="youEarn" type="number" step="0.01" min="0" placeholder="703.83" required />
+              </div>
+              <div class="full">
+                <label for="notes">Nota opzionale</label>
+                <textarea id="notes" placeholder="Es. 8 notti, cleaning 71€, occupancy taxes gestite da Airbnb"></textarea>
+              </div>
             </div>
-          </section>
 
-          <section class="card">
-            <div class="head"><h2>Spese inserite</h2></div>
-            <div class="body">
-              <div id="expensesEmpty" class="empty">Nessuna spesa inserita.</div>
-              <div class="tableWrap" id="expensesTableWrap"><table style="min-width:640px"><thead><tr><th>Data</th><th>Categoria</th><th>Nota</th><th class="num">Importo</th><th class="num">Azioni</th></tr></thead><tbody id="expensesTbody"></tbody></table></div>
+            <div class="preview" id="bookingPreview"></div>
+
+            <div class="button-row">
+              <button class="primary" type="submit">Salva prenotazione</button>
+              <button class="ghost" type="button" id="clearBookingBtn">Pulisci</button>
             </div>
-          </section>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Nuova spesa fondocassa</h2>
+        </div>
+        <div class="card-body">
+          <form id="expenseForm">
+            <div class="form-grid">
+              <div>
+                <label for="expenseDate">Data</label>
+                <input id="expenseDate" type="date" required />
+              </div>
+              <div>
+                <label for="expenseAmount">Importo (€)</label>
+                <input id="expenseAmount" type="number" step="0.01" min="0.01" required />
+              </div>
+              <div>
+                <label for="expenseCategory">Categoria</label>
+                <select id="expenseCategory">
+                  <option>Lavanderia</option>
+                  <option>Detersivi</option>
+                  <option>Consumabili</option>
+                  <option>Piccola manutenzione</option>
+                  <option>Chiavi</option>
+                  <option>Emergenza ospite</option>
+                  <option>Altro</option>
+                </select>
+              </div>
+              <div>
+                <label for="expenseNote">Nota</label>
+                <input id="expenseNote" type="text" placeholder="Es. lavaggio lenzuola" />
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="good" type="submit">Sottrai dal fondocassa</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="tables">
+      <div class="card">
+        <div class="card-header">
+          <h2>Prenotazioni</h2>
+          <button class="ghost" id="exportCsvBtn">Export dati CSV</button>
+        </div>
+        <div class="card-body">
+          <div id="bookingsEmpty" class="empty">Nessuna prenotazione inserita.</div>
+          <div class="table-wrap" id="bookingsTableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Codice</th>
+                  <th>Ospite</th>
+                  <th class="num">You earn</th>
+                  <th class="num">Base stimata</th>
+                  <th class="num">Ritenuta</th>
+                  <th class="num">Netto totale</th>
+                  <th class="num">Damiano</th>
+                  <th class="num">PM</th>
+                  <th class="num">Fondocassa</th>
+                  <th class="num">PM effettivo</th>
+                  <th class="right">Azioni</th>
+                </tr>
+              </thead>
+              <tbody id="bookingsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="compact-split">
+        <div class="card">
+          <div class="card-header">
+            <h2>Storico fondocassa</h2>
+          </div>
+          <div class="card-body">
+            <div id="movementsEmpty" class="empty">Nessun movimento.</div>
+            <div class="table-wrap" id="movementsTableWrap">
+              <table style="min-width:620px">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Descrizione</th>
+                    <th class="num">Entrata</th>
+                    <th class="num">Uscita</th>
+                    <th class="num">Saldo</th>
+                    <th class="right">Azioni</th>
+                  </tr>
+                </thead>
+                <tbody id="movementsTbody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
-        <section class="card">
-          <div class="head"><h2>Note tecniche</h2></div>
-          <div class="body">
-            <details><summary>Formula usata</summary><div class="inside"><p class="hint">Payout totale stimato = payout Damiano / 80%.<br>Payout PM stimato = payout totale × 20%.<br>Fondocassa = €8.60 per prenotazione, valore verificato sui payout reali.<br>PM effettivo = payout PM - fondocassa.</p></div></details>
-            <details><summary>Danger zone</summary><div class="inside"><div class="buttons"><button class="danger" id="deleteAllBtn">Cancella tutti i dati locali</button></div><p class="hint">Cancella prenotazioni e spese salvate in questo browser.</p></div></details>
-            <p class="footer">Questo strumento è gestionale e non sostituisce commercialista/CAF.</p>
+        <div class="card">
+          <div class="card-header">
+            <h2>Spese</h2>
           </div>
-        </section>
-      </section>
-    </div>
+          <div class="card-body">
+            <div id="expensesEmpty" class="empty">Nessuna spesa inserita.</div>
+            <div class="table-wrap" id="expensesTableWrap">
+              <table style="min-width:560px">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Categoria</th>
+                    <th>Nota</th>
+                    <th class="num">Importo</th>
+                    <th class="right">Azioni</th>
+                  </tr>
+                </thead>
+                <tbody id="expensesTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <script>
     /*
       CONFIGURAZIONE FISSA
-      Questi valori non sono modificabili dall'interfaccia per evitare errori.
-      Se in futuro cambiano, modificali qui a mano.
+
+      Questi valori non sono modificabili dall'interfaccia.
+      Se cambiano, modifica qui:
+
+      CLEANING_FEE = cleaning fee Airbnb standard.
+      PM_PERCENT = percentuale property manager.
+      OWNER_PERCENT = percentuale Damiano.
+      TAX_PERCENT = ritenuta Italia.
+      INITIAL_FUND = fondocassa iniziale.
+      AIRBNB_PAYOUT_RATE = rapporto stimato "You earn / base lorda".
+      Verificato sui payout reali: circa 0.81555.
     */
     const CLEANING_FEE = 71;
     const PM_PERCENT = 20;
     const OWNER_PERCENT = 80;
     const TAX_PERCENT = 21;
     const INITIAL_FUND = 161;
+    const AIRBNB_PAYOUT_RATE = 0.81555;
 
-    /*
-      Quota fondocassa per prenotazione.
-      Verificata sui payout reali: cleaning fee 71 €, dopo Airbnb fee + ritenuta + split PM
-      produce circa 8.60 € netti di quota pulizie nel payout del PM.
-    */
-    const FUND_PER_BOOKING = 8.60;
+    const STORAGE_KEY = "airbnbCalculator.compact.v3";
 
-    const STORAGE_KEY = "airbnbCalculator.simple.v2";
-    const defaults = { bookings: [], expenses: [] };
     let state = loadState();
-    const $ = id => document.getElementById(id);
 
-    function loadState(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return structuredClone(defaults);const p=JSON.parse(raw);return{bookings:Array.isArray(p.bookings)?p.bookings:[],expenses:Array.isArray(p.expenses)?p.expenses:[]}}catch{return structuredClone(defaults)}}
-    function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state,null,2))}
-    function eur(v){const n=Number.isFinite(Number(v))?Number(v):0;return n.toLocaleString("it-IT",{style:"currency",currency:"EUR"})}
-    function round2(v){return Math.round((Number(v)+Number.EPSILON)*100)/100}
-    function num(id){const v=$(id).value;return v===""?0:(Number(String(v).replace(",","."))||0)}
-    function text(id){return $(id).value.trim()}
-    function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+    const $ = (id) => document.getElementById(id);
 
-    function calculateBooking(b){
-      const ownerPayout=round2(Number(b.ownerPayout)||0);
-      const totalPayout=round2(ownerPayout/(OWNER_PERCENT/100));
-      const pmPayout=round2(totalPayout*(PM_PERCENT/100));
-      const fundContribution=ownerPayout>0?FUND_PER_BOOKING:0;
-      const pmEffective=round2(pmPayout-fundContribution);
-      return{ownerPayout,totalPayout,pmPayout,fundContribution,pmEffective};
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { bookings: [], expenses: [] };
+        const parsed = JSON.parse(raw);
+        return {
+          bookings: Array.isArray(parsed.bookings) ? parsed.bookings : [],
+          expenses: Array.isArray(parsed.expenses) ? parsed.expenses : []
+        };
+      } catch {
+        return { bookings: [], expenses: [] };
+      }
     }
 
-    function currentBookingFromForm(){return{id:$("bookingId").value||crypto.randomUUID(),code:text("code"),guest:text("guest"),ownerPayout:num("ownerPayout"),notes:text("notes"),updatedAt:new Date().toISOString()}}
-    function updatePreview(){const c=calculateBooking(currentBookingFromForm());$("bookingPreview").innerHTML=`<h3>Anteprima calcolo</h3><div class="row"><span>Payout Damiano</span><strong>${eur(c.ownerPayout)}</strong></div><div class="row"><span>Payout totale stimato</span><strong>${eur(c.totalPayout)}</strong></div><div class="row"><span>Payout PM stimato</span><strong>${eur(c.pmPayout)}</strong></div><div class="row"><span>Fondocassa generato</span><strong>${eur(c.fundContribution)}</strong></div><div class="row"><span>PM effettivo dopo fondocassa</span><strong>${eur(c.pmEffective)}</strong></div>`}
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state, null, 2));
+    }
 
-    function totals(){const bt=state.bookings.reduce((a,b)=>{const c=calculateBooking(b);a.fundIn+=c.fundContribution;a.owner+=c.ownerPayout;a.pm+=c.pmPayout;a.netTotal+=c.totalPayout;return a},{fundIn:0,owner:0,pm:0,netTotal:0});const out=state.expenses.reduce((s,e)=>s+(Number(e.amount)||0),0);return{...bt,fundIn:round2(bt.fundIn),fundOut:round2(out),fundCurrent:round2(INITIAL_FUND+bt.fundIn-out)}}
-    function renderDashboard(){const t=totals();$("metricFund").textContent=eur(t.fundCurrent);$("metricFund").className="val "+(t.fundCurrent<0?"dangerText":"good");$("metricFundIn").textContent=eur(t.fundIn);$("metricFundOut").textContent=eur(t.fundOut);$("metricOwner").textContent=eur(t.owner);$("metricPm").textContent=eur(t.pm)}
+    function eur(value) {
+      const n = Number.isFinite(Number(value)) ? Number(value) : 0;
+      return n.toLocaleString("it-IT", { style: "currency", currency: "EUR" });
+    }
 
-    function sortedBookings(){return[...state.bookings].sort((a,b)=>(b.createdAt||"").localeCompare(a.createdAt||""))}
-    function sortedExpenses(){return[...state.expenses].sort((a,b)=>(b.date||"").localeCompare(a.date||""))}
+    function round2(value) {
+      return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+    }
 
-    function renderBookings(){const rows=sortedBookings();$("bookingsEmpty").style.display=rows.length?"none":"block";$("bookingsTableWrap").style.display=rows.length?"block":"none";$("bookingsTbody").innerHTML=rows.map(b=>{const c=calculateBooking(b);return`<tr><td class="code">${esc(b.code||"—")}</td><td>${esc(b.guest||"—")}</td><td class="num">${eur(c.ownerPayout)}</td><td class="num">${eur(c.totalPayout)}</td><td class="num">${eur(c.pmPayout)}</td><td class="num">${eur(c.fundContribution)}</td><td class="num">${eur(c.pmEffective)}</td><td>${esc(b.notes||"—")}</td><td class="num"><div class="mini"><button class="ghost" onclick="editBooking('${b.id}')">Modifica</button><button class="danger" onclick="deleteBooking('${b.id}')">Elimina</button></div></td></tr>`}).join("")}
+    function num(id) {
+      const v = $(id).value;
+      if (v === "" || v === null || typeof v === "undefined") return 0;
+      return Number(String(v).replace(",", ".")) || 0;
+    }
 
-    function buildMovements(){const m=[];state.bookings.forEach(b=>{const c=calculateBooking(b);if(c.fundContribution>0)m.push({id:"booking:"+b.id,date:b.createdAt||"",type:"Entrata",description:`Quota fondocassa — ${b.code||"senza codice"}`,in:c.fundContribution,out:0,locked:true})});state.expenses.forEach(e=>m.push({id:"expense:"+e.id,expenseId:e.id,date:e.date||"",type:"Uscita",description:`${e.category||"Spesa"} — ${e.note||"nessuna nota"}`,in:0,out:Number(e.amount)||0,locked:false}));m.sort((a,b)=>(a.date||"9999").localeCompare(b.date||"9999"));let balance=INITIAL_FUND;return m.map(x=>{balance=round2(balance+(Number(x.in)||0)-(Number(x.out)||0));return{...x,balance}})}
-    function renderMovements(){const rows=buildMovements();$("movementsEmpty").style.display=rows.length?"none":"block";$("movementsTableWrap").style.display=rows.length?"block":"none";$("movementsTbody").innerHTML=rows.map(m=>`<tr><td>${esc(m.type)}</td><td>${esc(m.description)}</td><td class="num">${m.in?eur(m.in):"—"}</td><td class="num">${m.out?eur(m.out):"—"}</td><td class="num"><strong>${eur(m.balance)}</strong></td><td class="num">${m.locked?'<span class="muted">auto</span>':`<button class="danger" onclick="deleteExpense('${m.expenseId}')">Elimina</button>`}</td></tr>`).join("")}
-    function renderExpenses(){const rows=sortedExpenses();$("expensesEmpty").style.display=rows.length?"none":"block";$("expensesTableWrap").style.display=rows.length?"block":"none";$("expensesTbody").innerHTML=rows.map(e=>`<tr><td>${esc(e.date||"—")}</td><td>${esc(e.category||"—")}</td><td>${esc(e.note||"—")}</td><td class="num">${eur(e.amount)}</td><td class="num"><button class="danger" onclick="deleteExpense('${e.id}')">Elimina</button></td></tr>`).join("")}
-    function renderAll(){renderDashboard();renderBookings();renderExpenses();renderMovements();updatePreview()}
-    function clearBookingForm(){$("bookingForm").reset();$("bookingId").value="";$("bookingFormTitle").textContent="Nuova prenotazione";updatePreview()}
+    function text(id) {
+      return $(id).value.trim();
+    }
 
-    window.editBooking=function(id){const b=state.bookings.find(x=>x.id===id);if(!b)return;$("bookingId").value=b.id;$("code").value=b.code||"";$("guest").value=b.guest||"";$("ownerPayout").value=b.ownerPayout??"";$("notes").value=b.notes||"";$("bookingFormTitle").textContent="Modifica prenotazione";updatePreview();window.scrollTo({top:0,behavior:"smooth"})}
-    window.deleteBooking=function(id){const b=state.bookings.find(x=>x.id===id);if(!b)return;if(!confirm(`Eliminare la prenotazione ${b.code||""}?`))return;state.bookings=state.bookings.filter(x=>x.id!==id);saveState();renderAll()}
-    window.deleteExpense=function(id){const e=state.expenses.find(x=>x.id===id);if(!e)return;if(!confirm(`Eliminare la spesa ${eur(e.amount)}?`))return;state.expenses=state.expenses.filter(x=>x.id!==id);saveState();renderAll()}
+    function calculateBooking(booking) {
+      const youEarn = round2(Number(booking.youEarn) || 0);
+      const baseGross = youEarn > 0 ? round2(youEarn / AIRBNB_PAYOUT_RATE) : 0;
+      const withholding = round2(baseGross * (TAX_PERCENT / 100));
+      const netTotal = round2(youEarn - withholding);
+      const ownerPayout = round2(netTotal * (OWNER_PERCENT / 100));
+      const pmPayout = round2(netTotal * (PM_PERCENT / 100));
+      const cleaningRatio = baseGross > 0 ? CLEANING_FEE / baseGross : 0;
+      const fundContribution = round2(pmPayout * cleaningRatio);
+      const pmEffective = round2(pmPayout - fundContribution);
 
-    function csvCell(v){const s=String(v??"");return/[",\n]/.test(s)?`"${s.replaceAll('"','""')}"`:s}
-    function exportCsv(){const lines=[];lines.push("AIRBNB CALCULATOR");lines.push(`Cleaning fee,${CLEANING_FEE}`);lines.push(`Property manager %,${PM_PERCENT}`);lines.push(`Ritenuta Italia %,${TAX_PERCENT}`);lines.push(`Fondocassa iniziale,${INITIAL_FUND}`);lines.push(`Fondocassa per prenotazione,${FUND_PER_BOOKING}`);lines.push("");lines.push("PRENOTAZIONI");lines.push(["codice","ospite","payout_damiano","payout_totale_stimato","payout_pm_stimato","fondocassa","pm_effettivo","note"].join(","));state.bookings.forEach(b=>{const c=calculateBooking(b);lines.push([b.code,b.guest,c.ownerPayout,c.totalPayout,c.pmPayout,c.fundContribution,c.pmEffective,b.notes].map(csvCell).join(","))});lines.push("");lines.push("SPESE FONDOCASSA");lines.push(["data","categoria","importo","nota"].join(","));state.expenses.forEach(e=>lines.push([e.date,e.category,e.amount,e.note].map(csvCell).join(",")));lines.push("");lines.push("RIEPILOGO");const t=totals();lines.push(`Fondocassa attuale,${t.fundCurrent}`);lines.push(`Entrate fondocassa,${t.fundIn}`);lines.push(`Spese fondocassa,${t.fundOut}`);lines.push(`Totale payout Damiano,${round2(t.owner)}`);lines.push(`Totale payout PM stimato,${round2(t.pm)}`);downloadText("airbnb-calculator-export.csv",lines.join("\n"),"text/csv")}
-    function downloadText(filename,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
+      return {
+        youEarn,
+        baseGross,
+        withholding,
+        netTotal,
+        ownerPayout,
+        pmPayout,
+        fundContribution,
+        pmEffective
+      };
+    }
 
-    $("bookingForm").addEventListener("submit",e=>{e.preventDefault();const booking=currentBookingFromForm();if(!booking.code){alert("Inserisci il codice prenotazione.");return}if(!booking.ownerPayout||booking.ownerPayout<=0){alert("Inserisci il payout ricevuto da Damiano.");return}const idx=state.bookings.findIndex(b=>b.id===booking.id);if(idx>=0)state.bookings[idx]={...state.bookings[idx],...booking};else{booking.createdAt=new Date().toISOString();state.bookings.push(booking)}saveState();clearBookingForm();renderAll()});
-    $("clearBookingBtn").addEventListener("click",clearBookingForm);
-    $("expenseForm").addEventListener("submit",e=>{e.preventDefault();state.expenses.push({id:crypto.randomUUID(),date:$("expenseDate").value,amount:num("expenseAmount"),category:$("expenseCategory").value,note:text("expenseNote"),createdAt:new Date().toISOString()});saveState();$("expenseForm").reset();$("expenseDate").value=new Date().toISOString().slice(0,10);renderAll()});
-    ["code","guest","ownerPayout","notes"].forEach(id=>{$(id).addEventListener("input",updatePreview);$(id).addEventListener("change",updatePreview)});
-    $("exportCsvBtn").addEventListener("click",exportCsv);
-    $("deleteAllBtn").addEventListener("click",()=>{if(!confirm("Cancellare tutti i dati locali?"))return;if(!confirm("Ultima conferma: questa azione non si può annullare."))return;localStorage.removeItem(STORAGE_KEY);state=structuredClone(defaults);renderAll()});
-    $("expenseDate").value=new Date().toISOString().slice(0,10);renderAll();
+    function currentBookingFromForm() {
+      return {
+        id: $("bookingId").value || crypto.randomUUID(),
+        bookingDate: $("bookingDate").value,
+        code: text("code"),
+        guest: text("guest"),
+        youEarn: num("youEarn"),
+        notes: text("notes"),
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function updatePreview() {
+      const c = calculateBooking(currentBookingFromForm());
+      $("bookingPreview").innerHTML = `
+        <div class="preview-row"><span>Base lorda stimata</span><strong>${eur(c.baseGross)}</strong></div>
+        <div class="preview-row"><span>Ritenuta Italia</span><strong>-${eur(c.withholding)}</strong></div>
+        <div class="preview-row"><span>Netto totale Airbnb</span><strong>${eur(c.netTotal)}</strong></div>
+        <div class="preview-row"><span>Payout Damiano</span><strong>${eur(c.ownerPayout)}</strong></div>
+        <div class="preview-row"><span>Payout PM</span><strong>${eur(c.pmPayout)}</strong></div>
+        <div class="preview-row"><span>Fondocassa</span><strong>${eur(c.fundContribution)}</strong></div>
+        <div class="preview-row"><span>PM effettivo</span><strong>${eur(c.pmEffective)}</strong></div>
+      `;
+    }
+
+    function totals() {
+      const bookingTotals = state.bookings.reduce((acc, b) => {
+        const c = calculateBooking(b);
+        acc.fundIn += c.fundContribution;
+        acc.owner += c.ownerPayout;
+        acc.pm += c.pmPayout;
+        acc.netTotal += c.netTotal;
+        return acc;
+      }, { fundIn: 0, owner: 0, pm: 0, netTotal: 0 });
+
+      const fundOut = state.expenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+      return {
+        fundIn: round2(bookingTotals.fundIn),
+        fundOut: round2(fundOut),
+        fundCurrent: round2(INITIAL_FUND + bookingTotals.fundIn - fundOut),
+        owner: round2(bookingTotals.owner),
+        pm: round2(bookingTotals.pm)
+      };
+    }
+
+    function renderDashboard() {
+      const t = totals();
+      $("metricFund").textContent = eur(t.fundCurrent);
+      $("metricFund").className = "value " + (t.fundCurrent < 0 ? "danger" : "good");
+      $("metricFundIn").textContent = eur(t.fundIn);
+      $("metricFundOut").textContent = eur(t.fundOut);
+      $("metricOwner").textContent = eur(t.owner);
+      $("metricPm").textContent = eur(t.pm);
+    }
+
+    function sortedBookings() {
+      return [...state.bookings].sort((a, b) => {
+        const da = a.bookingDate || a.createdAt || "";
+        const db = b.bookingDate || b.createdAt || "";
+        return db.localeCompare(da);
+      });
+    }
+
+    function sortedExpenses() {
+      return [...state.expenses].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    }
+
+    function renderBookings() {
+      const rows = sortedBookings();
+      $("bookingsEmpty").style.display = rows.length ? "none" : "block";
+      $("bookingsTableWrap").style.display = rows.length ? "block" : "none";
+
+      $("bookingsTbody").innerHTML = rows.map(b => {
+        const c = calculateBooking(b);
+        return `
+          <tr>
+            <td>${escapeHtml(b.bookingDate || "—")}</td>
+            <td class="code">${escapeHtml(b.code || "—")}</td>
+            <td>${escapeHtml(b.guest || "—")}</td>
+            <td class="num">${eur(c.youEarn)}</td>
+            <td class="num">${eur(c.baseGross)}</td>
+            <td class="num">-${eur(c.withholding)}</td>
+            <td class="num">${eur(c.netTotal)}</td>
+            <td class="num">${eur(c.ownerPayout)}</td>
+            <td class="num">${eur(c.pmPayout)}</td>
+            <td class="num">${eur(c.fundContribution)}</td>
+            <td class="num">${eur(c.pmEffective)}</td>
+            <td class="right">
+              <div class="mini-actions">
+                <button class="ghost" onclick="editBooking('${b.id}')">Modifica</button>
+                <button class="danger" onclick="deleteBooking('${b.id}')">Elimina</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function buildMovements() {
+      const movements = [];
+
+      state.bookings.forEach(b => {
+        const c = calculateBooking(b);
+        if (c.fundContribution > 0) {
+          movements.push({
+            id: "booking:" + b.id,
+            date: b.bookingDate || b.createdAt || "",
+            description: `Prenotazione ${b.code || "senza codice"}`,
+            in: c.fundContribution,
+            out: 0,
+            locked: true
+          });
+        }
+      });
+
+      state.expenses.forEach(e => {
+        movements.push({
+          id: "expense:" + e.id,
+          expenseId: e.id,
+          date: e.date || "",
+          description: `${e.category || "Spesa"} — ${e.note || "nessuna nota"}`,
+          in: 0,
+          out: Number(e.amount) || 0,
+          locked: false
+        });
+      });
+
+      movements.sort((a, b) => (a.date || "9999-99-99").localeCompare(b.date || "9999-99-99"));
+
+      let balance = INITIAL_FUND;
+      return movements.map(m => {
+        balance = round2(balance + (Number(m.in) || 0) - (Number(m.out) || 0));
+        return { ...m, balance };
+      });
+    }
+
+    function renderMovements() {
+      const rows = buildMovements();
+      $("movementsEmpty").style.display = rows.length ? "none" : "block";
+      $("movementsTableWrap").style.display = rows.length ? "block" : "none";
+
+      $("movementsTbody").innerHTML = rows.map(m => `
+        <tr>
+          <td>${escapeHtml(m.date || "—")}</td>
+          <td>${escapeHtml(m.description)}</td>
+          <td class="num">${m.in ? eur(m.in) : "—"}</td>
+          <td class="num">${m.out ? eur(m.out) : "—"}</td>
+          <td class="num"><strong>${eur(m.balance)}</strong></td>
+          <td class="right">${m.locked ? '<span class="muted">auto</span>' : `<button class="danger" onclick="deleteExpense('${m.expenseId}')">Elimina</button>`}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderExpenses() {
+      const rows = sortedExpenses();
+      $("expensesEmpty").style.display = rows.length ? "none" : "block";
+      $("expensesTableWrap").style.display = rows.length ? "block" : "none";
+
+      $("expensesTbody").innerHTML = rows.map(e => `
+        <tr>
+          <td>${escapeHtml(e.date || "—")}</td>
+          <td>${escapeHtml(e.category || "—")}</td>
+          <td>${escapeHtml(e.note || "—")}</td>
+          <td class="num">${eur(e.amount)}</td>
+          <td class="right"><button class="danger" onclick="deleteExpense('${e.id}')">Elimina</button></td>
+        </tr>
+      `).join("");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderBookings();
+      renderMovements();
+      renderExpenses();
+      updatePreview();
+    }
+
+    function clearBookingForm() {
+      $("bookingForm").reset();
+      $("bookingId").value = "";
+      $("bookingFormTitle").textContent = "Nuova prenotazione";
+      $("bookingDate").value = new Date().toISOString().slice(0, 10);
+      updatePreview();
+    }
+
+    window.editBooking = function(id) {
+      const b = state.bookings.find(x => x.id === id);
+      if (!b) return;
+      $("bookingId").value = b.id;
+      $("bookingDate").value = b.bookingDate || "";
+      $("code").value = b.code || "";
+      $("guest").value = b.guest || "";
+      $("youEarn").value = b.youEarn ?? "";
+      $("notes").value = b.notes || "";
+      $("bookingFormTitle").textContent = "Modifica prenotazione";
+      updatePreview();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.deleteBooking = function(id) {
+      const b = state.bookings.find(x => x.id === id);
+      if (!b) return;
+      if (!confirm(`Eliminare la prenotazione ${b.code || ""}?`)) return;
+      state.bookings = state.bookings.filter(x => x.id !== id);
+      saveState();
+      renderAll();
+    }
+
+    window.deleteExpense = function(id) {
+      const e = state.expenses.find(x => x.id === id);
+      if (!e) return;
+      if (!confirm(`Eliminare la spesa ${eur(e.amount)}?`)) return;
+      state.expenses = state.expenses.filter(x => x.id !== id);
+      saveState();
+      renderAll();
+    }
+
+    function exportCsv() {
+      const lines = [];
+
+      lines.push("AIRBNB CALCULATOR");
+      lines.push(`Cleaning fee,${CLEANING_FEE}`);
+      lines.push(`Property manager %,${PM_PERCENT}`);
+      lines.push(`Ritenuta Italia %,${TAX_PERCENT}`);
+      lines.push(`Fondocassa iniziale,${INITIAL_FUND}`);
+      lines.push("");
+
+      lines.push("PRENOTAZIONI");
+      lines.push([
+        "data",
+        "codice",
+        "ospite",
+        "you_earn_airbnb",
+        "base_stimata",
+        "ritenuta",
+        "netto_totale",
+        "payout_damiano",
+        "payout_pm",
+        "fondocassa",
+        "pm_effettivo",
+        "note"
+      ].join(","));
+
+      state.bookings.forEach(b => {
+        const c = calculateBooking(b);
+        lines.push([
+          b.bookingDate,
+          b.code,
+          b.guest,
+          c.youEarn,
+          c.baseGross,
+          c.withholding,
+          c.netTotal,
+          c.ownerPayout,
+          c.pmPayout,
+          c.fundContribution,
+          c.pmEffective,
+          b.notes
+        ].map(csvCell).join(","));
+      });
+
+      lines.push("");
+      lines.push("SPESE FONDOCASSA");
+      lines.push(["data", "categoria", "importo", "nota"].join(","));
+      state.expenses.forEach(e => {
+        lines.push([e.date, e.category, e.amount, e.note].map(csvCell).join(","));
+      });
+
+      lines.push("");
+      lines.push("RIEPILOGO");
+      const t = totals();
+      lines.push(`Fondocassa attuale,${t.fundCurrent}`);
+      lines.push(`Entrate fondocassa,${t.fundIn}`);
+      lines.push(`Spese fondocassa,${t.fundOut}`);
+      lines.push(`Totale payout Damiano,${t.owner}`);
+      lines.push(`Totale payout PM,${t.pm}`);
+
+      downloadText("airbnb-calculator-export.csv", lines.join("\n"), "text/csv");
+    }
+
+    function csvCell(value) {
+      const s = String(value ?? "");
+      if (/[",\n]/.test(s)) return `"${s.replaceAll('"', '""')}"`;
+      return s;
+    }
+
+    function downloadText(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    $("bookingForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const booking = currentBookingFromForm();
+
+      if (!booking.bookingDate) {
+        alert("Inserisci la data prenotazione.");
+        return;
+      }
+
+      if (!booking.code) {
+        alert("Inserisci il codice prenotazione.");
+        return;
+      }
+
+      if (!booking.youEarn || booking.youEarn <= 0) {
+        alert("Inserisci il valore You earn Airbnb.");
+        return;
+      }
+
+      const idx = state.bookings.findIndex(b => b.id === booking.id);
+      if (idx >= 0) {
+        state.bookings[idx] = { ...state.bookings[idx], ...booking };
+      } else {
+        booking.createdAt = new Date().toISOString();
+        state.bookings.push(booking);
+      }
+
+      saveState();
+      clearBookingForm();
+      renderAll();
+    });
+
+    $("expenseForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const expense = {
+        id: crypto.randomUUID(),
+        date: $("expenseDate").value,
+        amount: num("expenseAmount"),
+        category: $("expenseCategory").value,
+        note: text("expenseNote"),
+        createdAt: new Date().toISOString()
+      };
+
+      state.expenses.push(expense);
+      saveState();
+      $("expenseForm").reset();
+      $("expenseDate").value = new Date().toISOString().slice(0, 10);
+      renderAll();
+    });
+
+    ["bookingDate", "code", "guest", "youEarn", "notes"].forEach(id => {
+      $(id).addEventListener("input", updatePreview);
+      $(id).addEventListener("change", updatePreview);
+    });
+
+    $("clearBookingBtn").addEventListener("click", clearBookingForm);
+    $("exportCsvBtn").addEventListener("click", exportCsv);
+
+    $("bookingDate").value = new Date().toISOString().slice(0, 10);
+    $("expenseDate").value = new Date().toISOString().slice(0, 10);
+    renderAll();
   </script>
 </body>
 </html>
-
