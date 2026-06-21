@@ -395,7 +395,7 @@
       <span class="pill">Cleaning fee <strong>€71.00</strong></span>
       <span class="pill">PM <strong>20%</strong></span>
       <span class="pill">Ritenuta Italia <strong>21%</strong></span>
-      <span class="pill">Fondocassa iniziale <strong>€161.00</strong></span>
+      <span class="pill">Fondocassa iniziale <strong id="pillOpeningBalance">€0.00</strong></span>
       <span class="pill">Archivio <strong>airbnb_data.json</strong></span>
     </div>
   </header>
@@ -408,7 +408,7 @@
       <button class="ghost" id="exportCsvBtn">Export CSV</button>
       <label class="file-button ghost" for="fallbackImportInput">Import JSON</label>
       <input id="fallbackImportInput" type="file" accept="application/json,.json" />
-      <span class="archive-status" id="archiveStatus">Archivio non collegato. Uso dati locali del browser.</span>
+      <span class="archive-status" id="archiveStatus">Archivio non collegato. Valori iniziali a zero; apri airbnb_data.json per caricare i dati.</span>
     </section>
 
     <section class="dashboard">
@@ -607,7 +607,7 @@
       PM_PERCENT = percentuale property manager.
       OWNER_PERCENT = percentuale Damiano.
       TAX_PERCENT = ritenuta Italia.
-      INITIAL_FUND = fondocassa iniziale.
+      Il fondocassa iniziale non è hardcoded: viene letto da airbnb_data.json come openingBalance.
       FUND_PER_BOOKING = quota netta reale stimata delle pulizie dentro il payout PM.
       HOST_FEE_RATE = fee Airbnb effettiva stimata dal rapporto "You earn / base lorda".
 
@@ -617,15 +617,15 @@
     const PM_PERCENT = 20;
     const OWNER_PERCENT = 80;
     const TAX_PERCENT = 21;
-    const INITIAL_FUND = 161;
     const FUND_PER_BOOKING = 8.60;
     const HOST_FEE_RATE = 0.1844474571557687;
     const ARCHIVE_FILENAME = "airbnb_data.json";
 
-    const STORAGE_KEY = "airbnbCalculator.dropbox.v1";
+    const STORAGE_KEY = "airbnbCalculator.dropbox.v2";
 
     const defaults = {
-      version: 1,
+      version: 2,
+      openingBalance: 0,
       bookings: [],
       expenses: []
     };
@@ -650,7 +650,8 @@
 
     function normalizeState(data) {
       return {
-        version: 1,
+        version: 2,
+        openingBalance: Number(data.openingBalance) || 0,
         bookings: Array.isArray(data.bookings) ? data.bookings : [],
         expenses: Array.isArray(data.expenses) ? data.expenses : []
       };
@@ -747,7 +748,7 @@
       }, { fundIn: 0, owner: 0, pm: 0, netTotal: 0 });
 
       const expenseTotal = state.expenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
-      const fundCurrent = round2(INITIAL_FUND + bookingTotals.fundIn - expenseTotal);
+      const fundCurrent = round2((Number(state.openingBalance) || 0) + bookingTotals.fundIn - expenseTotal);
 
       return {
         ...bookingTotals,
@@ -765,6 +766,8 @@
       $("metricFundOut").textContent = eur(t.fundOut);
       $("metricOwner").textContent = eur(t.owner);
       $("metricPm").textContent = eur(t.pm);
+      const pill = $("pillOpeningBalance");
+      if (pill) pill.textContent = eur(Number(state.openingBalance) || 0);
     }
 
     function sortedBookings() {
@@ -817,6 +820,18 @@
     function buildMovements() {
       const movements = [];
 
+      if ((Number(state.openingBalance) || 0) !== 0) {
+        movements.push({
+          id: "opening-balance",
+          date: "",
+          type: "Saldo iniziale",
+          description: "Fondocassa iniziale da airbnb_data.json",
+          in: Number(state.openingBalance) || 0,
+          out: 0,
+          locked: true
+        });
+      }
+
       state.bookings.forEach(b => {
         const c = calculateBooking(b);
         if (c.fundContribution > 0) {
@@ -851,7 +866,7 @@
         return da.localeCompare(db);
       });
 
-      let balance = INITIAL_FUND;
+      let balance = 0;
       return movements.map(m => {
         balance = round2(balance + (Number(m.in) || 0) - (Number(m.out) || 0));
         return { ...m, balance };
@@ -911,7 +926,7 @@
       if (archiveConnected) {
         $("archiveStatus").textContent = `Archivio collegato: ${archiveName || ARCHIVE_FILENAME}. Salvataggio automatico attivo.`;
       } else {
-        $("archiveStatus").textContent = "Archivio non collegato. Uso dati locali del browser.";
+        $("archiveStatus").textContent = "Archivio non collegato. Valori iniziali a zero; apri airbnb_data.json per caricare i dati.";
       }
     }
 
@@ -1018,7 +1033,8 @@
 
         const writable = await archiveHandle.createWritable();
         const payload = {
-          version: 1,
+          version: 2,
+          openingBalance: Number(state.openingBalance) || 0,
           updatedAt: new Date().toISOString(),
           bookings: state.bookings,
           expenses: state.expenses
@@ -1058,7 +1074,8 @@
 
     function downloadJson() {
       const payload = {
-        version: 1,
+        version: 2,
+        openingBalance: Number(state.openingBalance) || 0,
         updatedAt: new Date().toISOString(),
         bookings: state.bookings,
         expenses: state.expenses
@@ -1073,7 +1090,7 @@
       lines.push(`Cleaning fee,${CLEANING_FEE}`);
       lines.push(`Property manager %,${PM_PERCENT}`);
       lines.push(`Ritenuta Italia %,${TAX_PERCENT}`);
-      lines.push(`Fondocassa iniziale,${INITIAL_FUND}`);
+      lines.push(`Fondocassa iniziale,${Number(state.openingBalance) || 0}`);
       lines.push(`Fondocassa per prenotazione,${FUND_PER_BOOKING}`);
       lines.push("");
 
